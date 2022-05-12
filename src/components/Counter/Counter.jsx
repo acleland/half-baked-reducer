@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import styles from './Counter.css';
 
 const colors = {
@@ -7,39 +7,56 @@ const colors = {
   red: 'rgb(239, 68, 68)',
 };
 
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    case 'reset':
+      return { count: 0 };
+    case 'setColor':
+      if (state.count === 0) {
+      }
+    default:
+      throw new Error();
+  }
+}
+
 export default function Counter() {
   const [count, setCount] = useState(0);
   const [currentColor, setCurrentColor] = useState(colors.yellow);
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
 
-  useEffect(() => {
-    if (count === 0) {
-      setCurrentColor(colors.yellow);
-    }
+  // useEffect(() => {
+  //   if (state.count === 0) {
+  //     setCurrentColor(colors.yellow);
+  //   }
 
-    if (count > 0) {
-      setCurrentColor(colors.green);
-    }
+  //   if (state.count > 0) {
+  //     setCurrentColor(colors.green);
+  //   }
 
-    if (count < 0) {
-      setCurrentColor(colors.red);
-    }
-  }, [count]);
+  //   if (state.count < 0) {
+  //     setCurrentColor(colors.red);
+  //   }
+  // }, [state.count]);
 
   const increment = () => {
-    setCount((prevState) => prevState + 1);
+    dispatch({ type: 'increment' });
   };
 
   const decrement = () => {
-    setCount((prevState) => prevState - 1);
+    dispatch({ type: 'decrement' });
   };
 
   const reset = () => {
-    setCount(0);
+    dispatch({ type: 'reset' });
   };
 
   return (
     <main className={styles.main}>
-      <h1 style={{ color: currentColor }}>{count}</h1>
+      <h1 style={{ color: currentColor }}>{state.count}</h1>
       <div>
         <button
           type="button"
