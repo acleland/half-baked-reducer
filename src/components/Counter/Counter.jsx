@@ -7,40 +7,39 @@ const colors = {
   red: 'rgb(239, 68, 68)',
 };
 
+const initialState = { count: 0, color: colors.yellow };
+
 function reducer(state, action) {
   switch (action.type) {
     case 'increment':
-      return { count: state.count + 1 };
+      return { ...state, count: state.count + 1 };
     case 'decrement':
-      return { count: state.count - 1 };
+      return { ...state, count: state.count - 1 };
     case 'reset':
-      return { count: 0 };
+      return initialState;
     case 'setColor':
-      if (state.count === 0) {
-      }
+      return { ...state, color: action.payload };
     default:
       throw new Error();
   }
 }
 
 export default function Counter() {
-  const [count, setCount] = useState(0);
-  const [currentColor, setCurrentColor] = useState(colors.yellow);
-  const [state, dispatch] = useReducer(reducer, { count: 0 });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  // useEffect(() => {
-  //   if (state.count === 0) {
-  //     setCurrentColor(colors.yellow);
-  //   }
+  useEffect(() => {
+    if (state.count === 0) {
+      dispatch({ type: 'setColor', payload: colors.yellow });
+    }
 
-  //   if (state.count > 0) {
-  //     setCurrentColor(colors.green);
-  //   }
+    if (state.count > 0) {
+      dispatch({ type: 'setColor', payload: colors.green });
+    }
 
-  //   if (state.count < 0) {
-  //     setCurrentColor(colors.red);
-  //   }
-  // }, [state.count]);
+    if (state.count < 0) {
+      dispatch({ type: 'setColor', payload: colors.red });
+    }
+  }, [state.count]);
 
   const increment = () => {
     dispatch({ type: 'increment' });
@@ -56,7 +55,7 @@ export default function Counter() {
 
   return (
     <main className={styles.main}>
-      <h1 style={{ color: currentColor }}>{state.count}</h1>
+      <h1 style={{ color: state.color }}>{state.count}</h1>
       <div>
         <button
           type="button"
